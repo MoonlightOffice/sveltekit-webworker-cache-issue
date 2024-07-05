@@ -1,38 +1,25 @@
-# create-svelte
+# SvelteKit web worker cache issue 
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+## How to reproduce
+First, run the following commands to build files.
 ```
+git clone https://github.com/MoonlightOffice/sveltekit-webworker-cache-issue.git
 
-## Developing
+cd sveltekit-webworker-cache-issue
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+npm i
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Next, take a look at `build/service-worker.js` and try to find file names that start with `/_app/immutable/`. You'll notice that only `/app/immutable/workers/` are not included, while other directories such as `/app/immutable/chunks` and `/app/immutable/entry` are included.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## How I created this project
+
+1. Run `npm create svelte@latest` to create a blank project with Svelte 5 enabled.
+
+2. Change the adapter to `@sveltejs/adapter-static` and add `export const prerender = true` in `+layout.ts`.
+
+3. Add a sample web worker demo in `src/routes` directory.
+
+4. Copy-pasted service worker from [SvelteKit's docs](https://kit.svelte.dev/docs/service-workers#inside-the-service-worker).
