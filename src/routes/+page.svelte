@@ -1,2 +1,18 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import SomeWorker from './some-worker?worker';
+
+	async function compute(): Promise<number> {
+		const w = new SomeWorker();
+		w.postMessage(null);
+
+		return new Promise((resolve) => {
+			w.onmessage = (ev: MessageEvent<number>) => resolve(ev.data);
+		});
+	}
+</script>
+
+{#await compute()}
+	<p>Now computing...</p>
+{:then result}
+	<p>Result: {result}</p>
+{/await}
